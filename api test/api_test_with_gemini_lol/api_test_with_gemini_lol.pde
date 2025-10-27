@@ -8,6 +8,7 @@
  * - Uses millis() as a timer.
  * - Uses a helper function to map (lat, lon) to (x, y) coordinates.
  * - Creates a "breadcrumb trail" for the currently tracked aircraft.
+ * - Keeps old paths in a different color.
  */
 
 import processing.data.*; // For JSON
@@ -35,14 +36,36 @@ int lastApiCallTime = 0;
 final int API_CALL_INTERVAL = 2000; // 2000 ms = 2 seconds
 
 // --- Aircraft Data ---
-// We need a thread-safe list because one thread (API) will be
-// writing to it while the main thread (draw) is reading it.
-List<PVector> flightPath = Collections.synchronizedList(new ArrayList<PVector>());
+final int MAX_PATH_POINTS = 200; // Max points in our trail
 String currentFlightInfo = "Fetching data...";
 
-// --- FIX: Add variables to track the *current* plane ---
+// --- NEW: Data structure for multiple paths ---
 String currentlyTrackedHex = "";
-final int MAX_PATH_POINTS = 200; // Max points in our trail
+// A thread-safe list to hold all flight path objects
+List<FlightPath> allPaths = Collections.synchronizedList(new ArrayList<FlightPath>());
+
+// A class to hold the path for a single aircraft
+class FlightPath {
+  String hex;
+  List<PVector> points = new ArrayList<PVector>();
+  
+  FlightPath(String hex) {
+    this.hex = hex;
+  }
+  
+  void addPoint(PVector p) {
+    points.add(p);
+    // Prune the trail if it gets too long
+    while (points.size() > MAX_PATH_POINTS) {
+      points.remove(0); // Remove the oldest point
+    }
+  }
+  
+  PVector getLastPoint() {
+    if (points.isEmpty()) return null;
+    return points.get(points.size() - 1);
+  }
+}
 
 
 /**
@@ -100,7 +123,7 @@ void updateAircraftData() {
         flight, altitude, groundSpeed
       );
       
-      // --- FIX: Breadcrumb Trail Logic ---
+      // --- FIX: Multiple Path Logic ---
       
       // Get the unique ID and current position of the closest plane
       String newHex = ac.getString("hex", "N/A");
@@ -108,23 +131,33 @@ void updateAircraftData() {
       if (ac.hasKey("lat") && ac.hasKey("lon")) {
           float currentLat = ac.getFloat("lat");
           float currentLon = ac.getFloat("lon");
+          PVector newPoint = geoToScreen(currentLat, currentLon);
           
-          synchronized(flightPath) {
+          synchronized(allPaths) {
+            
             // Check if this is a *different* plane than we were tracking
             if (!newHex.equals(currentlyTrackedHex)) {
-              // It's a new plane, so clear the old path
-              flightPath.clear();
-              // And update the ID of the plane we are now tracking
+              // It's a new plane, update the tracker
               currentlyTrackedHex = newHex;
             }
             
-            // Add the new, current position to the trail
-            flightPath.add(geoToScreen(currentLat, currentLon));
-            
-            // Prune the trail if it gets too long
-            while (flightPath.size() > MAX_PATH_POINTS) {
-              flightPath.remove(0); // Remove the oldest point
+            // Find the path for this hex, or create it if it doesn't exist
+            FlightPath pathForThisHex = null;
+            for (FlightPath p : allPaths) {
+              if (p.hex.equals(newHex)) {
+                pathForThisHex = p;
+                break;
+              }
             }
+            
+            // If no path was found, create a new one
+            if (pathForThisHex == null) {
+              pathForThisHex = new FlightPath(newHex);
+              allPaths.add(pathForThisHex);
+            }
+            
+            // Add the new position to the correct path
+            pathForThisHex.addPoint(newPoint);
           }
       }
       // --- END FIX ---
@@ -132,10 +165,8 @@ void updateAircraftData() {
     } else {
       // No aircraft found
       currentFlightInfo = "No aircraft found within " + SEARCH_RADIUS_NM + " nm.";
-      synchronized(flightPath) {
-        flightPath.clear(); // Clear path if no plane
-        currentlyTrackedHex = ""; // Reset tracked plane
-      }
+      // We don't clear the paths, just set the active tracker to none
+      currentlyTrackedHex = ""; // Reset tracked plane
     }
     
   } catch (Exception e) {
@@ -198,24 +229,42 @@ void draw() {
   fill(255, 0, 0);
   circle(mahidolPos.x, mahidolPos.y, 10);
   
-  // 3. Draw the flight path and current plane
+  // 3. Draw the flight paths and current plane
   // We use 'synchronized' to safely read the list
-  synchronized(flightPath) {
-    if (!flightPath.isEmpty()) {
-      
-      // Draw the path as a blue line
-      stroke(0, 150, 255); // Blue
+  synchronized(allPaths) {
+    FlightPath activePath = null;
+
+    // Draw all inactive paths first
+    stroke(255, 255, 0); // Yellow
+    noFill();
+    for (FlightPath path : allPaths) {
+      if (!path.hex.equals(currentlyTrackedHex)) {
+        if (!path.points.isEmpty()) {
+          beginShape();
+          for (PVector v : path.points) {
+            vertex(v.x, v.y);
+          }
+          endShape();
+        }
+      } else {
+        activePath = path; // Found the active path, save it for later
+      }
+    }
+
+    // Now, draw the active path and plane on top
+    if (activePath != null && !activePath.points.isEmpty()) {
+      stroke(0, 255, 0); // Green
       noFill();
       beginShape();
-      for (PVector v : flightPath) {
+      for (PVector v : activePath.points) {
         vertex(v.x, v.y);
       }
       endShape();
       
       // Draw the current aircraft (last point in the list)
-      PVector currentPos = flightPath.get(flightPath.size() - 1);
-      stroke(255, 255, 0); // Yellow
-      fill(255, 255, 0);
+      PVector currentPos = activePath.getLastPoint();
+      fill(0, 255, 0); // Green
+      stroke(0, 255, 0); // Green
       circle(currentPos.x, currentPos.y, 8);
     }
   }
