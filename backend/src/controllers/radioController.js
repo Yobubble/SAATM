@@ -8,7 +8,7 @@ const fs = require('fs');
  */
 exports.radioController = async (req, res) => {
     try {
-        const audioPath = path.join(__dirname, '../mock/sample_radio.wav');
+        const audioPath = path.join(__dirname, '../mock/sample_radio.mp3');
 
         if (!fs.existsSync(audioPath)) {
             return res.status(404).json({
