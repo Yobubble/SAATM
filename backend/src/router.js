@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const { radioController } = require('./controllers/radioController');
 
 // ======== Default Location (VTBS - Suvarnabhumi Airport) ========
 const DEFAULT_LAT = 13.7;   // latitude
@@ -71,5 +72,11 @@ router.get('/aircraft', async (req, res) => {
 
 // ======== Auto-refresh cache every x second ========
 setInterval(fetchAircraftData, 1000);    // setup the auto-refresh interval
+
+
+
+//radio transcribe controller
+router.get('/transcribe', radioController);
+
 
 module.exports = router;
