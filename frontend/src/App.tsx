@@ -6,10 +6,23 @@ import { AirRouteToggleButton } from "./components/air_route_toggle_button";
 
 function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
+    const [caption, setCaption] = useState<string | null>(null);
+
+    const playAudioWithCaption = (audioSrc: string) => {
+        const audio = new Audio(audioSrc);
+
+        // TODO: fetch transcribing api here
+
+        setCaption("Technologia! Techcologia!");
+        audio.play();
+        audio.onended = () => {
+            setCaption(null);
+        };
+    };
 
     return (
         <div className="relative h-screen w-screen">
-            <MapView />
+            <MapView onAircraftClick={playAudioWithCaption} />
             {showAirRoute && (
                 <div className="absolute top-5 right-5 z-50">
                     <AirRouteInset />
@@ -21,6 +34,11 @@ function App() {
                     onToggle={() => setShowAirRoute(!showAirRoute)}
                 />
             </div>
+            {caption && (
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded z-[1000]">
+                    {caption}
+                </div>
+            )}
         </div>
     );
 }

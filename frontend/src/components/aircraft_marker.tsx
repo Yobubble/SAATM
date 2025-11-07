@@ -47,10 +47,23 @@ const createAircraftIcon = (aircraft: AircraftData) => {
 
 interface AircraftMarkerProps {
     aircraft: AircraftData;
+    onAircraftClick: (audioSrc: string) => void;
 }
 
 export function AircraftMarker(props: Readonly<AircraftMarkerProps>) {
     const icon = createAircraftIcon(props.aircraft);
 
-    return <Marker position={props.aircraft.position} icon={icon}></Marker>;
+    const handleMarkerClick = () => {
+        props.onAircraftClick("/technologia.mp3");
+    };
+
+    return (
+        <Marker
+            position={props.aircraft.position}
+            icon={icon}
+            eventHandlers={{
+                click: handleMarkerClick,
+            }}
+        ></Marker>
+    );
 }
