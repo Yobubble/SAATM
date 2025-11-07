@@ -20,7 +20,11 @@ const mockAircraftData: AircraftData[] = [
     },
 ];
 
-export function MapView() {
+interface MapViewProps {
+    onAircraftClick: (audioSrc: string) => void;
+}
+
+export function MapView({ onAircraftClick }: Readonly<MapViewProps>) {
     return (
         <MapContainer
             center={[13.69, 100.75]}
@@ -32,7 +36,11 @@ export function MapView() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             {mockAircraftData.map((aircraft) => (
-                <AircraftMarker key={aircraft.id} aircraft={aircraft} />
+                <AircraftMarker
+                    key={aircraft.id}
+                    aircraft={aircraft}
+                    onAircraftClick={onAircraftClick}
+                />
             ))}
         </MapContainer>
     );
