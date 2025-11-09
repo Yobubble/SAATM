@@ -18,7 +18,6 @@ async function fetchAircraftData() {
     const response = await axios.get(url);
     const data = response.data;
 
-    // Simplify the response to only useful fields
     const aircraft = (data.ac || []).map(ac => ({
       hex: ac.hex,
       flight: ac.flight,
@@ -70,7 +69,7 @@ router.get('/aircraft', async (req, res) => {
   });
 });
 
-// ======== Auto-refresh cache every 1 second ========
-setInterval(fetchAircraftData, 1000);
+// ======== Auto-refresh cache every x second ========
+setInterval(fetchAircraftData, 1000);    // setup the auto-refresh interval
 
 module.exports = router;
