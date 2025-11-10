@@ -1,15 +1,13 @@
 import { Marker } from "react-leaflet";
 import L from "leaflet";
 import { AircraftData } from "../utils/types";
-import { IconPlaneTilt } from "@tabler/icons-react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { FaPlaneUp } from "react-icons/fa6";
 
-const airplaneSvg = renderToStaticMarkup(
-    <IconPlaneTilt size={30} stroke={1.5} />
-);
+const airplaneSvg = renderToStaticMarkup(<FaPlaneUp size={15} color="blue" />);
 
 const createAircraftIcon = (aircraft: AircraftData) => {
-    const { heading, id, speed, altitude } = aircraft;
+    const { track, flight, gs, alt_baro, hex } = aircraft;
     const statsHtml = `
         <div style="
             position: absolute;
@@ -23,17 +21,18 @@ const createAircraftIcon = (aircraft: AircraftData) => {
             font-size: 12px;
             white-space: nowrap;
         ">
-            <strong>ID:</strong> ${id} <br />
-            <strong>Speed:</strong> ${speed} knots <br />
-            <strong>Altitude:</strong> ${altitude} ft <br />
-            <strong>Heading:</strong> ${heading}°
+            <strong>Hex:</strong> ${hex} <br />
+            <strong>ID:</strong> ${flight} <br />
+            <strong>Speed:</strong> ${gs} knots <br />
+            <strong>Altitude:</strong> ${alt_baro} ft <br />
+            <strong>Heading:</strong> ${track}°
         </div>
     `;
 
     return new L.DivIcon({
         html: `
             <div>
-                <div style="transform: rotate(${heading}deg); width: 30px; height: 30px;">
+                <div style="transform: rotate(${track}deg); width: 30px; height: 30px;">
                     ${airplaneSvg}
                 </div>
                 ${statsHtml}
@@ -52,6 +51,7 @@ interface AircraftMarkerProps {
 
 export function AircraftMarker(props: Readonly<AircraftMarkerProps>) {
     const icon = createAircraftIcon(props.aircraft);
+    const laLong: [number, number] = [props.aircraft.lat, props.aircraft.lon];
 
     const handleMarkerClick = () => {
         props.onAircraftClick("/technologia.mp3");
@@ -59,7 +59,7 @@ export function AircraftMarker(props: Readonly<AircraftMarkerProps>) {
 
     return (
         <Marker
-            position={props.aircraft.position}
+            position={laLong}
             icon={icon}
             eventHandlers={{
                 click: handleMarkerClick,
