@@ -1,4 +1,4 @@
-export interface AircraftData {
+export interface Aircraft {
     hex: string;
     flight?: string;
     lat: number;
@@ -12,7 +12,7 @@ export interface AircraftApiResponse {
     total: number;
     now: number;
     message: string;
-    aircraft: AircraftData[];
+    aircraft: Aircraft[];
     cached: boolean;
     location: {
         lat: number;
