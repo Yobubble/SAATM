@@ -207,7 +207,7 @@ function App() {
                     />
                 </div>
             </div>
-            <div className="z-50 fixed top-5 left-5">
+            <div className="z-50 fixed bottom-5 left-5">
                 <AltitudeFilter
                     minAltitude={minAltitude}
                     maxAltitude={maxAltitude}
