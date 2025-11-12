@@ -6,7 +6,7 @@ import { FaPlaneUp } from "react-icons/fa6";
 
 const airplaneSvg = renderToStaticMarkup(<FaPlaneUp size={15} color="blue" />);
 
-const createAircraftIcon = (aircraft: AircraftData) => {
+const createAircraftIcon = (aircraft: AircraftData, showInfo: boolean) => {
     const { track, flight, gs, alt_baro, hex } = aircraft;
     const statsHtml = `
         <div style="
@@ -35,7 +35,7 @@ const createAircraftIcon = (aircraft: AircraftData) => {
                 <div style="transform: rotate(${track}deg); width: 30px; height: 30px;">
                     ${airplaneSvg}
                 </div>
-                ${statsHtml}
+                ${showInfo ? statsHtml : ""}
             </div>
         `,
         className: "bg-transparent",
@@ -47,10 +47,11 @@ const createAircraftIcon = (aircraft: AircraftData) => {
 interface AircraftMarkerProps {
     aircraft: AircraftData;
     onAircraftClick: (audioSrc: string) => void;
+    showInfo: boolean;
 }
 
 export function AircraftMarker(props: Readonly<AircraftMarkerProps>) {
-    const icon = createAircraftIcon(props.aircraft);
+    const icon = createAircraftIcon(props.aircraft, props.showInfo);
     const laLong: [number, number] = [props.aircraft.lat, props.aircraft.lon];
 
     const handleMarkerClick = () => {

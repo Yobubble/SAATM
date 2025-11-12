@@ -4,11 +4,13 @@ import { MapView } from "./components/map_view";
 import { AirRouteInset } from "./components/air_route_inset";
 import { AirRouteToggleButton } from "./components/air_route_toggle_button";
 import { MockDataToggleButton } from "./components/mock_data_toggle_button";
+import { AircraftInfoToggleButton } from "./components/aircraft_info_toggle_button";
 
 function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
     const [caption, setCaption] = useState<string | null>(null);
     const [useMockData, setUseMockData] = useState(false);
+    const [showAircraftInfo, setShowAircraftInfo] = useState(true);
 
     const playAudioWithCaption = (audioSrc: string) => {
         const audio = new Audio(audioSrc);
@@ -27,6 +29,7 @@ function App() {
             <MapView
                 onAircraftClick={playAudioWithCaption}
                 useMockData={useMockData}
+                showAircraftInfo={useMockData && showAircraftInfo}
             />
             {showAirRoute && (
                 <div className="absolute top-5 right-5 z-50">
@@ -39,6 +42,14 @@ function App() {
                         useMockData={useMockData}
                         onToggle={() => setUseMockData(!useMockData)}
                     />
+                    {useMockData && (
+                        <AircraftInfoToggleButton
+                            showInfo={showAircraftInfo}
+                            onToggle={() =>
+                                setShowAircraftInfo(!showAircraftInfo)
+                            }
+                        />
+                    )}
                     <AirRouteToggleButton
                         isOSM={!showAirRoute}
                         onToggle={() => setShowAirRoute(!showAirRoute)}

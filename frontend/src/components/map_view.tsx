@@ -8,11 +8,13 @@ import "leaflet/dist/leaflet.css";
 interface MapViewProps {
     onAircraftClick: (audioSrc: string) => void;
     useMockData: boolean;
+    showAircraftInfo: boolean;
 }
 
 export function MapView({
     onAircraftClick,
     useMockData,
+    showAircraftInfo,
 }: Readonly<MapViewProps>) {
     const [aircraftData, setAircraftData] =
         useState<AircraftApiResponse | null>(null);
@@ -68,6 +70,7 @@ export function MapView({
                     key={aircraft.hex}
                     aircraft={aircraft}
                     onAircraftClick={onAircraftClick}
+                    showInfo={showAircraftInfo}
                 />
             ))}
         </MapContainer>
