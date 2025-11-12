@@ -8,6 +8,7 @@ import { MockDataToggleButton } from "./components/mock_data_toggle_button";
 import { Aircraft, AircraftApiResponse } from "./utils/types";
 import { mockAircraftData } from "./utils/mock_data";
 import { StopFollowingButton } from "./components/stop_following_button";
+import { AltitudeFilter } from "./components/altitude_filter";
 
 function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
@@ -123,6 +124,8 @@ function App() {
             setSelectedFlight(null);
         }
     };
+    const [minAltitude, setMinAltitude] = useState<number | null>(null);
+    const [maxAltitude, setMaxAltitude] = useState<number | null>(null);
 
     const playAudioWithCaption = (audioSrc: string) => {
         const audio = new Audio(audioSrc);
@@ -183,6 +186,9 @@ function App() {
                 onAircraftClick={playAudioWithCaption}
                 aircraftData={aircraftData}
                 selectedFlight={selectedFlight}
+                useMockData={useMockData}
+                minAltitude={minAltitude ?? 0}
+                maxAltitude={maxAltitude ?? 0}
             />
             {showAirRoute && (
                 <div className="absolute top-5 right-5 z-50">
@@ -200,6 +206,14 @@ function App() {
                         onToggle={() => setShowAirRoute(!showAirRoute)}
                     />
                 </div>
+            </div>
+            <div className="z-50 fixed bottom-5 left-5">
+                <AltitudeFilter
+                    minAltitude={minAltitude}
+                    maxAltitude={maxAltitude}
+                    onMinChange={setMinAltitude}
+                    onMaxChange={setMaxAltitude}
+                />
             </div>
             {caption && (
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-black bg-opacity-50 text-white p-2 rounded z-1000">
