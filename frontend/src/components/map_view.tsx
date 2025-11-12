@@ -11,6 +11,7 @@ interface MapViewProps {
     useMockData: boolean;
     minAltitude: number;
     maxAltitude: number;
+    showInfoBox: boolean;
 }
 
 const ChangeView = ({
@@ -34,6 +35,7 @@ export function MapView({
     useMockData,
     minAltitude,
     maxAltitude,
+    showInfoBox,
 }: Readonly<MapViewProps>) {
     return (
         <MapContainer
@@ -68,6 +70,7 @@ export function MapView({
                         key={aircraft.hex}
                         aircraft={aircraft}
                         onAircraftClick={onAircraftClick}
+                        showInfoBox={showInfoBox}
                     />
                 ))}
         </MapContainer>

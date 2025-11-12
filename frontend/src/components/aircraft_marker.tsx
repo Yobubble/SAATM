@@ -1,14 +1,15 @@
 import { Marker } from "react-leaflet";
 import L from "leaflet";
-import { AircraftData } from "../utils/types";
+import { Aircraft } from "../utils/types";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FaPlaneUp } from "react-icons/fa6";
 
 const airplaneSvg = renderToStaticMarkup(<FaPlaneUp size={15} color="blue" />);
 
-const createAircraftIcon = (aircraft: AircraftData) => {
+const createAircraftIcon = (aircraft: Aircraft, showInfoBox: boolean) => {
     const { track, flight, gs, alt_baro, hex } = aircraft;
-    const statsHtml = `
+    const statsHtml = showInfoBox
+        ? `
         <div style="
             position: absolute;
             left: 35px; /* Position it to the right of the icon */
@@ -27,7 +28,8 @@ const createAircraftIcon = (aircraft: AircraftData) => {
             <strong>Altitude:</strong> ${alt_baro} ft <br />
             <strong>Heading:</strong> ${track}°
         </div>
-    `;
+    `
+        : "";
 
     return new L.DivIcon({
         html: `
@@ -45,12 +47,13 @@ const createAircraftIcon = (aircraft: AircraftData) => {
 };
 
 interface AircraftMarkerProps {
-    aircraft: AircraftData;
+    aircraft: Aircraft;
     onAircraftClick: (audioSrc: string) => void;
+    showInfoBox: boolean;
 }
 
 export function AircraftMarker(props: Readonly<AircraftMarkerProps>) {
-    const icon = createAircraftIcon(props.aircraft);
+    const icon = createAircraftIcon(props.aircraft, props.showInfoBox);
     const laLong: [number, number] = [props.aircraft.lat, props.aircraft.lon];
 
     const handleMarkerClick = () => {
