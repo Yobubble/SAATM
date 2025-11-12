@@ -8,6 +8,9 @@ interface MapViewProps {
     onAircraftClick: (audioSrc: string) => void;
     aircraftData: AircraftApiResponse | null;
     selectedFlight: Aircraft | null;
+    useMockData: boolean;
+    minAltitude: number;
+    maxAltitude: number;
 }
 
 const ChangeView = ({
@@ -28,6 +31,9 @@ export function MapView({
     onAircraftClick,
     aircraftData,
     selectedFlight,
+    useMockData,
+    minAltitude,
+    maxAltitude,
 }: Readonly<MapViewProps>) {
     return (
         <MapContainer
@@ -45,13 +51,25 @@ export function MapView({
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {aircraftData?.aircraft.map((aircraft) => (
-                <AircraftMarker
-                    key={aircraft.hex}
-                    aircraft={aircraft}
-                    onAircraftClick={onAircraftClick}
-                />
-            ))}
+            {aircraftData?.aircraft
+                .filter((aircraft) => {
+                    const altitude = aircraft.alt_baro;
+                    if (minAltitude > 0 && maxAltitude > 0) {
+                        return altitude >= minAltitude && altitude <= maxAltitude;
+                    } else if (minAltitude > 0) {
+                        return altitude >= minAltitude;
+                    } else if (maxAltitude > 0) {
+                        return altitude <= maxAltitude;
+                    }
+                    return true; // No filter applied (both are 0 or null)
+                })
+                .map((aircraft) => (
+                    <AircraftMarker
+                        key={aircraft.hex}
+                        aircraft={aircraft}
+                        onAircraftClick={onAircraftClick}
+                    />
+                ))}
         </MapContainer>
     );
 }
