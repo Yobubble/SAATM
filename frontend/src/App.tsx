@@ -5,6 +5,7 @@ import { MapView } from "./components/map_view";
 import { AirRouteInset } from "./components/air_route_inset";
 import { AirRouteToggleButton } from "./components/air_route_toggle_button";
 import { MockDataToggleButton } from "./components/mock_data_toggle_button";
+import { InfoBoxToggleButton } from "./components/info_box_toggle_button";
 import { Aircraft, AircraftApiResponse } from "./utils/types";
 import { mockAircraftData } from "./utils/mock_data";
 import { StopFollowingButton } from "./components/stop_following_button";
@@ -14,6 +15,7 @@ function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
     const [caption, setCaption] = useState<string | null>(null);
     const [useMockData, setUseMockData] = useState(false);
+    const [showInfoBox, setShowInfoBox] = useState(true);
     const [aircraftData, setAircraftData] =
         useState<AircraftApiResponse | null>(null);
     const [searchResults, setSearchResults] = useState<Aircraft[]>([]);
@@ -189,6 +191,7 @@ function App() {
                 useMockData={useMockData}
                 minAltitude={minAltitude ?? 0}
                 maxAltitude={maxAltitude ?? 0}
+                showInfoBox={showInfoBox}
             />
             {showAirRoute && (
                 <div className="absolute top-5 right-5 z-50">
@@ -200,6 +203,10 @@ function App() {
                     <MockDataToggleButton
                         useMockData={useMockData}
                         onToggle={() => setUseMockData(!useMockData)}
+                    />
+                    <InfoBoxToggleButton
+                        showInfoBox={showInfoBox}
+                        onToggle={() => setShowInfoBox(!showInfoBox)}
                     />
                     <AirRouteToggleButton
                         isOSM={!showAirRoute}
