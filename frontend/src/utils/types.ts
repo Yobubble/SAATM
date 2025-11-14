@@ -23,8 +23,7 @@ export interface AircraftApiResponse {
     };
 }
 
-// Defines the structure for a single radio transcript message
 export type TranscriptMessage = {
-    timestamp: number;
+    timestamp: string;
     text: string;
 };

@@ -18,6 +18,17 @@ import YouTube from "react-youtube";
 import { mockTranscript } from "./utils/mockTranscript";
 import { TranscriptToggleButton } from "./components/transcript_toggle_button";
 
+// Helper function to convert "M.SS" string timestamp to total seconds
+const parseTimestamp = (timestamp: string): number => {
+    const parts = timestamp.split(".");
+    if (parts.length !== 2) {
+        return 0;
+    }
+    const minutes = parseInt(parts[0], 10);
+    const seconds = parseInt(parts[1], 10);
+    return minutes * 60 + seconds;
+};
+
 function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
     // const [caption, setCaption] = useState<string | null>(null);
@@ -173,28 +184,30 @@ function App() {
         }
 
         const player = playerRef.current;
-        // Get player's current time and offset it by the video's start time (6037s)
-        const currentTime = player.getCurrentTime() - 6037;
+        // This is the elapsed time since we clicked "Start"
+        const currentTime = player.getCurrentTime();
 
-        // Check if we're past the start and still have messages to show
-        if (
-            currentTime >= 0 &&
-            transcriptIndexRef.current < mockTranscript.length
-        ) {
+        // 1. Check if we need to stop (at 2 minutes)
+        if (currentTime >= 120) {
+            handleStopTranscript();
+            return; // Stop the loop and the player
+        }
+
+        // 2. Check if we need to add a message
+        if (transcriptIndexRef.current < mockTranscript.length) {
             const nextMessage = mockTranscript[transcriptIndexRef.current];
+            const messageTimestamp = parseTimestamp(nextMessage.timestamp);
 
             // If the video time is past the message's timestamp, show it!
-            if (currentTime >= nextMessage.timestamp) {
+            if (currentTime >= messageTimestamp) {
                 setTranscriptMessages((prev) => [...prev, nextMessage]);
                 // Advance our counter to look for the *next* message
                 transcriptIndexRef.current += 1;
             }
         }
 
-        // Keep the loop running as long as there are messages left
-        if (transcriptIndexRef.current < mockTranscript.length) {
-            requestIDRef.current = requestAnimationFrame(checkTranscript);
-        }
+        // 3. Keep the loop running
+        requestIDRef.current = requestAnimationFrame(checkTranscript);
     };
 
     // Function to START the transcript and audio
@@ -222,6 +235,7 @@ function App() {
         // Stop any pending animation frames
         if (requestIDRef.current) {
             cancelAnimationFrame(requestIDRef.current);
+            requestIDRef.current = null; // Clear the ref
         }
         if (playerRef.current) {
             // Stop the video
@@ -286,7 +300,6 @@ function App() {
                 )}
             </div>
             <MapView
-                // MODIFIED: This prop is required by MapViewProps and is added back
                 onAircraftClick={playAudioWithCaption}
                 aircraftData={aircraftData}
                 selectedFlight={selectedFlight}
@@ -321,23 +334,22 @@ function App() {
                 </div>
             </div>
 
-            {/* This block is now conditional on `showTranscript` */}
-            {/* The layout is stacked: Filter first, then Transcript */}
-            {showTranscript && (
-                <div className="z-50 fixed bottom-5 left-5 flex flex-col gap-4">
-                    <AltitudeFilter
-                        minAltitude={minAltitude}
-                        maxAltitude={maxAltitude}
-                        onMinChange={setMinAltitude}
-                        onMaxChange={setMaxAltitude}
-                    />
+            <div className="z-50 fixed bottom-5 left-5 flex flex-col gap-4">
+                <AltitudeFilter
+                    minAltitude={minAltitude}
+                    maxAltitude={maxAltitude}
+                    onMinChange={setMinAltitude}
+                    onMaxChange={setMaxAltitude}
+                />
+                {/* The transcript box is now the only item hidden by the toggle */}
+                {showTranscript && (
                     <RadioTranscript
                         messages={transcriptMessages}
                         onStart={handleStartTranscript}
                         onStop={handleStopTranscript}
                     />
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }

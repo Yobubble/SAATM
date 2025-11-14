@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { TranscriptMessage } from "../utils/types";
 
-// Added props for start/stop functionality
 type RadioTranscriptProps = {
     messages: TranscriptMessage[];
     onStart: () => void;
@@ -26,22 +25,21 @@ export const RadioTranscript = ({
     }, [messages]);
 
     return (
-        <div className="h-48 w-80 bg-black bg-opacity-50 rounded-lg p-2 flex flex-col gap-2">
-            <h3 className="text-white text-sm font-bold border-b border-gray-500 pb-1">
+        <div className="h-48 w-96 bg-white rounded-lg p-2 flex flex-col gap-2 shadow-md">
+            <h3 className="text-black text-sm font-bold border-b border-gray-300 pb-1">
                 Radio Transcript
             </h3>
 
-            {/* Start and Stop buttons */}
             <div className="flex gap-2">
                 <button
                     onClick={onStart}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-1 px-2 rounded"
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-1 px-2 rounded"
                 >
                     Start
                 </button>
                 <button
                     onClick={onStop}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded"
+                    className="flex-1 bg-white hover:bg-gray-100 text-black border border-gray-300 text-xs font-bold py-1 px-2 rounded"
                 >
                     Stop
                 </button>
@@ -55,10 +53,10 @@ export const RadioTranscript = ({
                     {messages.map((msg, index) => (
                         <li
                             key={`${msg.timestamp}-${index}`}
-                            className="text-white text-xs"
+                            className="text-black text-xs"
                         >
-                            <span className="text-gray-400">
-                                [{msg.timestamp.toFixed(2)}
+                            <span className="text-gray-500">
+                                [{msg.timestamp}
                                 {"]: "}
                             </span>
                             {msg.text}
