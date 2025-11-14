@@ -1,3 +1,5 @@
+// frontend/src/utils/types.ts
+
 export interface Aircraft {
     hex: string;
     flight?: string;
@@ -20,3 +22,8 @@ export interface AircraftApiResponse {
         radius: number;
     };
 }
+
+export type TranscriptMessage = {
+    timestamp: string;
+    text: string;
+};
