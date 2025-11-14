@@ -1,3 +1,5 @@
+// frontend/src/utils/types.ts
+
 export interface Aircraft {
     hex: string;
     flight?: string;
@@ -20,3 +22,9 @@ export interface AircraftApiResponse {
         radius: number;
     };
 }
+
+// Defines the structure for a single radio transcript message
+export type TranscriptMessage = {
+    timestamp: number;
+    text: string;
+};

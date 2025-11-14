@@ -1,0 +1,40 @@
+// frontend/src/utils/mockTranscript.ts
+import { TranscriptMessage } from "./types";
+
+// This is the hand-transcribed data
+export const mockTranscript: TranscriptMessage[] = [
+    { timestamp: 0.01, text: "Direct SABSA 19L QNH 1003 BKP146." },
+    { timestamp: 0.05, text: "BKP146, High speed approved." },
+    { timestamp: 0.08, text: "Roger BKP146." },
+    { timestamp: 0.16, text: "Decend 14000 feet BKP146." },
+    { timestamp: 0.19, text: "BKP146 Decend 11000 feet QNH 1003." },
+    { timestamp: 0.23, text: "Decend 11000 1003 BKP146." },
+    { timestamp: 0.49, text: "AIQ647 confirm decend 3000 feet." },
+    {
+        timestamp: 0.52,
+        text: "AIQ647 decend 2600 feet cleared ILS-Z Runway 21R.",
+    },
+    {
+        timestamp: 0.57,
+        text: "Devend 2600 feet cleared ILS-Z 21R AIQ647.",
+    },
+    { timestamp: 1.02, text: "AIQ3119, Established runway 21R." },
+    { timestamp: 1.06, text: "AIQ3119, can you reduce minimum approach speed?" },
+    { timestamp: 1.12, text: "Say your minimum." },
+    { timestamp: 1.17, text: "Minimum 141 knots, AIQ3119" },
+    { timestamp: 1.19, text: "Roger" },
+    { timestamp: 1.21, text: "AIQ3119, contact tower 118.1." },
+    { timestamp: 1.24, text: "1181 AIQ3119." },
+    {
+        timestamp: 1.3,
+        text: "AIQ647, reduce speed 140 and clear ILS-Z runway 21R report established.",
+    },
+    {
+        timestamp: 1.36,
+        text: "Speed 140 runway 21R report established, AIQ647.",
+    },
+    { timestamp: 1.42, text: "NOK305 reduce speed 160." },
+    { timestamp: 1.46, text: "reduce speed 160 knots, NOK305" },
+    { timestamp: 1.55, text: "NOK537 SABAI3A." },
+    { timestamp: 1.57, text: "NOK537, radar contacted descend FL140 direct NOD" },
+];
