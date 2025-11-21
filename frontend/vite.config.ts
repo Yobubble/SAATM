@@ -7,6 +7,13 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
+    test: {
+        coverage: {
+            provider: "v8", // or 'istanbul'
+            include: ["src/lib/*.{ts,tsx}"],
+            enabled: true,
+        },
+    },
     plugins: [react(), tailwindcss()],
 
     // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
