@@ -1,6 +1,6 @@
-import { AircraftData } from "./types";
+import { Aircraft } from "./types";
 
-export const mockAircraftData: AircraftData[] = [
+export const mockAircraftData: Aircraft[] = [
     {
         hex: "01",
         flight: "ICT062",
@@ -12,7 +12,7 @@ export const mockAircraftData: AircraftData[] = [
     },
     {
         hex: "02",
-        flight: "UAL123",
+        flight: "ICT123",
         lat: 13.71,
         lon: 100.77,
         alt_baro: 9000,
