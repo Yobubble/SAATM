@@ -25,7 +25,7 @@ The testing part is under the course **ITCS473 Software Quality Assurance and Te
 
 **Unit Test** 
   - Unit test coverage demonstration `tests/Unit test coverage demo.pdf`
-  - Unit test report `frontend/coverage`
+  - Unit test report `frontend/coverage/index.html`
   - Test Code
         `frontend/src/lib/altitudeFilter.test.ts`
         `frontend/src/lib/flightSearch.test.ts`
