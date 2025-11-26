@@ -49,6 +49,12 @@ The testing part is under the course **ITCS473 Software Quality Assurance and Te
            
     3.2  `automated test cases/cypress/e2e/Test_Suite_3_Show_Info_Boxes.cy.js`
 
+**Bonus: CI Integration**
+
+  - We did CI integration that is running on GitHub Action.
+    
+  - See more details in GitHub Action.
+
 # Team's Members
 ## Bad SE
 - Thanachot Onlamoon 6588062
