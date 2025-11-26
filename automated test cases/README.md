@@ -12,35 +12,46 @@ The automated tests are based on the manual test cases created in the `manual te
 
 ## Prerequisites
 
-1. **Node.js and npm** 
-2. **Cypress** 
+1. **Node.js and npm**
+2. **Cypress**
 3. **Application running** - The frontend application must be running on `http://localhost:1420`
-
 
 ## Steps to run Tests
 
 ### Step 1: Install Cypress
+
 ```bash
 cd frontend
 npm install --global cypress
 ```
 
-### Step 2: Start the Application
+### Step 2: Start the Frontend
+
 ```bash
 cd frontend
 npm run dev
 ```
+
 Keep this terminal running! The app should be at http://localhost:1420
 
-### Step 3: Run Tests (in a NEW terminal)
+### Step 3: Start the Backend
+
+```bash
+cd backend
+npm run start
+```
+
+Keep this terminal running! The app should be at http://localhost:3000
+
+### Step 4: Run Tests (in a NEW terminal)
+
 ```bash
 cd "automated test cases"
 npx cypress open
 ```
 
 Then:
+
 - Click "E2E Testing"
 - Choose your browser
 - Click on a test file to run it
-
-
