@@ -52,6 +52,6 @@ npx cypress open
 
 Then:
 
-- Click "E2E Testing"
+- Click "Add add project" at path `automated test cases`
 - Choose your browser
 - Click on a test file to run it

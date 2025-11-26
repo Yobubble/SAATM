@@ -4,7 +4,11 @@ describe("Test Suite 1: Flight Search Functionality", () => {
         cy.wait(2000);
 
         cy.contains("button", "Use Mock Data").click(); // Enable mock data
-        cy.wait(1500);
+        cy.wait(500);
+        cy.contains("button", "Use Real API").click(); // Click twice to ensure it's enabled
+        cy.wait(500);
+        cy.contains("button", "Use Mock Data").click(); // Triple click to be sure
+        cy.wait(3000);
     });
 
     it("SAATM-1-1: Search by airline code ICT (multiple results)", () => {
