@@ -40,13 +40,14 @@ The testing part is under the course **ITCS473 Software Quality Assurance and Te
   - How to run automated ui test, see `automated test cases/README.md`
   - See automated UI codes in `automated test cases\cypress\e2e`
   - Test Code
-       1.  ` Should be here`
+
+    1 `Should be here`
           
-       3.  `automated test cases/cypress/e2e/Test_Suite_2_Altitude_Filter.cy.js`
+    2  `automated test cases/cypress/e2e/Test_Suite_2_Altitude_Filter.cy.js`
            
-       3.1  `automated test cases/cypress/e2e/Test_Suite_3_Hide_Info_Boxes.cy.js`
+    3.1  `automated test cases/cypress/e2e/Test_Suite_3_Hide_Info_Boxes.cy.js`
            
-       3.2  `automated test cases/cypress/e2e/Test_Suite_3_Show_Info_Boxes.cy.js`
+    3.2  `automated test cases/cypress/e2e/Test_Suite_3_Show_Info_Boxes.cy.js`
 
 # Team's Members
 ## Bad SE
