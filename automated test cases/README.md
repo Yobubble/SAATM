@@ -22,7 +22,7 @@ The automated tests are based on the manual test cases created in the `manual te
 ### Step 1: Install Cypress
 ```bash
 cd frontend
-npm install
+npm install --global cypress
 ```
 
 ### Step 2: Start the Application
