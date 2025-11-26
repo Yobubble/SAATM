@@ -5,7 +5,7 @@ describe('Test Suite 3: Show Info Boxes', () => {
 
   it('should show info boxes when "Show Info Boxes" button is clicked', () => {
     cy.wait(2000)
-
+    cy.contains('button', 'Use Mock Data').click()
     cy.contains('button', 'Hide Info Boxes')
       .should('be.visible')
       .and('exist')
