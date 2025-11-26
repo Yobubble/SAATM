@@ -8,26 +8,23 @@ import { AirRouteInset } from "./components/air_route_inset";
 import { AirRouteToggleButton } from "./components/air_route_toggle_button";
 import { MockDataToggleButton } from "./components/mock_data_toggle_button";
 import { InfoBoxToggleButton } from "./components/info_box_toggle_button";
-import { Aircraft, AircraftApiResponse, TranscriptMessage } from "./utils/types";
+import {
+    Aircraft,
+    AircraftApiResponse,
+    TranscriptMessage,
+} from "./utils/types";
 import { mockAircraftData } from "./utils/mock_data";
 import { StopFollowingButton } from "./components/stop_following_button";
 import { AltitudeFilter } from "./components/altitude_filter";
 import { RadioTranscript } from "./components/radio_transcript";
-
 import YouTube from "react-youtube";
 import { mockTranscript } from "./utils/mockTranscript";
 import { TranscriptToggleButton } from "./components/transcript_toggle_button";
 
-// Helper function to convert "M.SS" string timestamp to total seconds
-const parseTimestamp = (timestamp: string): number => {
-    const parts = timestamp.split(".");
-    if (parts.length !== 2) {
-        return 0;
-    }
-    const minutes = parseInt(parts[0], 10);
-    const seconds = parseInt(parts[1], 10);
-    return minutes * 60 + seconds;
-};
+// Import extracted business logic
+import { searchFlights, updateSelectedFlight } from "./lib/flightSearch";
+import { createMockAircraftResponse } from "./lib/mockDataBuilder";
+import { parseTimestamp } from "./lib/transcriptUtils";
 
 function App() {
     const [showAirRoute, setShowAirRoute] = useState(true);
@@ -72,20 +69,21 @@ function App() {
 
     useEffect(() => {
         if (selectedFlight && aircraftData) {
-            const updatedFlight = aircraftData.aircraft.find(
-                (ac) => ac.hex === selectedFlight.hex
+            const updatedFlight = updateSelectedFlight(
+                selectedFlight,
+                aircraftData,
             );
-            if (updatedFlight) {
+            if (updatedFlight && updatedFlight !== selectedFlight) {
                 setSelectedFlight(updatedFlight);
             }
         }
-    }, [aircraftData]);
+    }, [aircraftData, selectedFlight]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${import.meta.env.VITE_API_URL}/aircraft`
+                    `${import.meta.env.VITE_API_URL}/aircraft`,
                 );
                 const data: AircraftApiResponse = await response.json();
                 setAircraftData(data);
@@ -95,18 +93,7 @@ function App() {
         };
 
         if (useMockData) {
-            setAircraftData({
-                total: mockAircraftData.length,
-                now: Date.now() / 1000,
-                message: "mock data",
-                aircraft: mockAircraftData,
-                cached: false,
-                location: {
-                    lat: 13.69,
-                    lon: 100.75,
-                    radius: 100,
-                },
-            });
+            setAircraftData(createMockAircraftResponse(mockAircraftData));
             return;
         }
 
@@ -118,44 +105,10 @@ function App() {
     }, [useMockData]);
 
     const handleSearch = (flightId: string) => {
-        if (flightId.trim() === "") {
-            setSearchError("Flight ID cannot be empty.");
-            setSearchResults([]);
-            setSelectedFlight(null);
-            return;
-        }
-
-        setSearchError(null);
-
-        if (!aircraftData) {
-            setSearchError("Aircraft data not available yet.");
-            return;
-        }
-
-        const exactMatch = aircraftData.aircraft.find(
-            (ac) =>
-                ac.flight?.trim().toLowerCase() ===
-                flightId.trim().toLowerCase()
-        );
-
-        if (exactMatch) {
-            setSelectedFlight(exactMatch);
-            setSearchResults([]);
-        } else {
-            const prefixMatches = aircraftData.aircraft.filter((ac) =>
-                ac.flight
-                    ?.trim()
-                    .toLowerCase()
-                    .startsWith(flightId.trim().toLowerCase())
-            );
-            if (prefixMatches.length > 0) {
-                setSearchResults(prefixMatches);
-            } else {
-                setSearchError("No flights found.");
-                setSearchResults([]);
-            }
-            setSelectedFlight(null);
-        }
+        const result = searchFlights(flightId, aircraftData);
+        setSelectedFlight(result.selectedFlight);
+        setSearchResults(result.searchResults);
+        setSearchError(result.error);
     };
     const [minAltitude, setMinAltitude] = useState<number | null>(null);
     const [maxAltitude, setMaxAltitude] = useState<number | null>(null);
@@ -303,7 +256,6 @@ function App() {
                 onAircraftClick={playAudioWithCaption}
                 aircraftData={aircraftData}
                 selectedFlight={selectedFlight}
-                useMockData={useMockData}
                 minAltitude={minAltitude ?? 0}
                 maxAltitude={maxAltitude ?? 0}
                 showInfoBox={showInfoBox}

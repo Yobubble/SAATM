@@ -25,5 +25,6 @@ export interface AircraftApiResponse {
 
 export type TranscriptMessage = {
     timestamp: string;
+    speaker: string;
     text: string;
 };
