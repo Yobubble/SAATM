@@ -41,7 +41,7 @@ The testing part is under the course **ITCS473 Software Quality Assurance and Te
   - See automated UI codes in `automated test cases\cypress\e2e`
   - Test Code
 
-    1 `Should be here`
+    1  `automated test cases/cypress/e2e/Test_Suite_1_Flight_Search.cy.js`
           
     2  `automated test cases/cypress/e2e/Test_Suite_2_Altitude_Filter.cy.js`
            
