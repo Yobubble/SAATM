@@ -4,8 +4,7 @@ describe('Test Suite 1: Flight Search Functionality', () => {
         cy.visit('http://localhost:1420')
         cy.wait(2000)
 
-        // Enable mock data
-        cy.contains('button', 'Use Mock Data').click()
+        cy.contains('button', 'Use Mock Data').click()// Enable mock data
         cy.wait(1500)
     })
 
